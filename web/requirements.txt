@@ -1,0 +1,9 @@
+openai
+openai-agents
+flask
+Flask-SocketIO
+python-dotenv
+requests
+PyGithub
+arxiv
+slugify

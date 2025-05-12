@@ -1,0 +1,109 @@
+<!-- web/templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Research‐Summary AI Agent</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    input,
+    textarea,
+    button {
+      margin: .5rem 0;
+      width: 100%;
+      padding: .5rem;
+    }
+
+    #output pre {
+      background: #f9f9f9;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    #logs {
+      font-size: .9rem;
+      color: #555;
+      margin-top: 1rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+    <h1>Research Summary Agent</h1>
+    <input id="field" placeholder="Field of study"><br>
+    <input id="summary_points" placeholder="Summary points"><br>
+    <input id="style" placeholder="Writing style"><br>
+    <button onclick="startAgent()">Run Agent</button>
+
+
+  <script>
+    document.getElementById("ask-form").onsubmit = async e => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target));
+      data.summary_points = data.summary_points.split(',').map(point => point.trim());
+
+      try {
+        const response = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        document.getElementById("markdown").textContent = result.markdown || result.error;
+        document.getElementById("log-text").textContent = result.logs ? result.logs.join("\n") : "No logs available";
+      } catch (err) {
+        console.error("Error:", err);
+      }
+    };
+  </script>
+
+
+  <div id="output">
+    <h2>Generated Markdown</h2>
+    <pre id="markdown"></pre>
+  </div>
+
+  <div id="logs">
+    <h3>Agent Logs</h3>
+    <pre id="log-text"></pre>
+  </div>
+
+      <script>
+        var socket = io();
+
+        function startAgent() {
+            const field = document.getElementById("field").value;
+            const summary_points = document.getElementById("summary_points").value;
+            const style = document.getElementById("style").value;
+
+            socket.emit("start_agent", {
+                field: field,
+                summary_points: summary_points,
+                style: style
+            });
+        }
+
+        socket.on("log", (data) => {
+            const logs = document.getElementById("logs");
+            logs.innerHTML += `<p>${data.message}</p>`;
+            logs.scrollTop = logs.scrollHeight;
+        });
+
+        socket.on("result", (data) => {
+            document.getElementById("markdown").textContent = data.markdown;
+        });
+    </script>
+
+</body>
+
+</html>

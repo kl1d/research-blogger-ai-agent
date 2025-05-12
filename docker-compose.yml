@@ -1,0 +1,10 @@
+services:
+  agent:
+    build: .
+    container_name: agent
+    ports:
+      - "5005:5000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app 
