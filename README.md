@@ -61,8 +61,8 @@ research-blogger-agent/
 1. **Clone the repo**
 
    ```bash
-   git clone https://github.com/kl1d/research-agent.git
-   cd research-blogger-agent
+   git clone https://github.com/kl1d/research-blogger-ai-agent.git
+   cd research-blogger-ai-agent
    ```
 
 2. **Create a `.env` file**
