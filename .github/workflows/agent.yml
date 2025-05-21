@@ -1,9 +1,9 @@
 name: Run ResearchBloggerAgent
 
 on:
-  schedule:
-    - cron: "0 12 * * 2"  # Run every Tuesday at 12:00 UTC
-  workflow_dispatch:        # Manually trigger the workflow
+#  schedule:
+#   - cron: "0 12 * * 2"  # Run every Tuesday at 12:00 UTC
+#  workflow_dispatch:        # Manually trigger the workflow
 
 jobs:
   run-agent:
